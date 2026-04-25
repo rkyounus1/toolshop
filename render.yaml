@@ -1,0 +1,53 @@
+services:
+  # 1. Laravel API Service
+  - type: web
+    name: practice-software-testing-api
+    runtime: docker
+    repo: https://github.com/YOUR_GITHUB_USERNAME/practice-software-testing
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: practice-software-testing-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: practice-software-testing-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: practice-software-testing-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: practice-software-testing-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: practice-software-testing-db
+          property: password
+      - key: APP_KEY
+        sync: false
+
+  # 2. PostgreSQL Database
+  - type: postgresql
+    name: practice-software-testing-db
+    plan: free
+    ipAllowList: []
+
+  # 3. Angular Static Site
+  - type: static
+    name: practice-software-testing-frontend
+    repo: https://github.com/YOUR_GITHUB_USERNAME/practice-software-testing
+    buildCommand: npm install && npm run build
+    publishPath: dist/browser
+    envVars:
+      - key: API_URL
+        value: https://practice-software-testing-api.onrender.com
