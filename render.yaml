@@ -1,11 +1,16 @@
 services:
-  # 1. Laravel API Service
-  - type: web
-    name: practice-software-testing-api
-    runtime: docker
-    repo: https://github.com/YOUR_GITHUB_USERNAME/practice-software-testing
+  # PostgreSQL Database (free tier)
+  - type: postgresql
+    name: toolshop-db
     plan: free
-    dockerfilePath: ./Dockerfile
+    ipAllowList: []
+
+  # Laravel API (backend)
+  - type: web
+    name: toolshop-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./_docker/web.docker   # Adjust if needed
     envVars:
       - key: APP_ENV
         value: production
@@ -15,39 +20,33 @@ services:
         value: pgsql
       - key: DB_HOST
         fromDatabase:
-          name: practice-software-testing-db
+          name: toolshop-db
           property: host
       - key: DB_PORT
         fromDatabase:
-          name: practice-software-testing-db
+          name: toolshop-db
           property: port
       - key: DB_DATABASE
         fromDatabase:
-          name: practice-software-testing-db
+          name: toolshop-db
           property: database
       - key: DB_USERNAME
         fromDatabase:
-          name: practice-software-testing-db
+          name: toolshop-db
           property: user
       - key: DB_PASSWORD
         fromDatabase:
-          name: practice-software-testing-db
+          name: toolshop-db
           property: password
       - key: APP_KEY
         sync: false
+    healthCheckPath: /api/health
 
-  # 2. PostgreSQL Database
-  - type: postgresql
-    name: practice-software-testing-db
-    plan: free
-    ipAllowList: []
-
-  # 3. Angular Static Site
+  # Angular UI (frontend)
   - type: static
-    name: practice-software-testing-frontend
-    repo: https://github.com/YOUR_GITHUB_USERNAME/practice-software-testing
-    buildCommand: npm install && npm run build
-    publishPath: dist/browser
+    name: toolshop-ui
+    buildCommand: cd sprint5/UI && npm install && npm run build
+    publishPath: sprint5/UI/dist
     envVars:
       - key: API_URL
-        value: https://practice-software-testing-api.onrender.com
+        value: https://toolshop-api.onrender.com
