@@ -1,9 +1,8 @@
 services:
-  # PostgreSQL Database (free tier)
-  - type: postgresql
-    name: toolshop-db
-    plan: free
-    ipAllowList: []
+  - type: static
+    name: toolshop-ui
+    buildCommand: cd sprint5/UI && npm install && npm run build
+    publishPath: sprint5/UI/dist
 
   # Laravel API (backend)
   - type: web
