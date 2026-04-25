@@ -1,6 +1,7 @@
 services:
-  - type: static
+  - type: web
     name: toolshop-ui
+    runtime: static
     buildCommand: cd sprint5/UI && npm install && npm run build
     publishPath: sprint5/UI/dist
 
